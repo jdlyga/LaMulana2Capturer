@@ -1,3 +1,6 @@
+This script takes screenshots of La Mulana 2, converts the images to text (OCR), and prints the text to the console.  
+TODO: append text to files
+
 ## Requirements:
 
 Windows 10 with Python 3.8 installed
