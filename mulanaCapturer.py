@@ -1,26 +1,21 @@
 import pyautogui
 import win32gui
-import pytesseract
-try:
-    from PIL import Image
-except ImportError:
-    import Image
-
-####################################################################################################
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+from google.cloud import vision
+from google.cloud.vision import types
+import io
 
 ####################################################################################################
 
 def main():
 
-    image = captureWindow('Untitled - Paint')
-    if image:
-        print(ocrCore(image))
+    imageFile = io.BytesIO()
+    captureWindow('Lamulana2', imageFile)
+    if imageFile:
+        detectText('test.png')
 
 ####################################################################################################
 
-def captureWindow(windowTitle=None):
+def captureWindow(windowTitle, imageFile):
     
     hwnd = win32gui.FindWindow(None, windowTitle)
 
@@ -32,17 +27,27 @@ def captureWindow(windowTitle=None):
     x, y, x1, y1 = win32gui.GetClientRect(hwnd)
     x, y = win32gui.ClientToScreen(hwnd, (x, y))
     x1, y1 = win32gui.ClientToScreen(hwnd, (x1 - x, y1 - y))
-    image = pyautogui.screenshot(region=(x, y, x1, y1))
-    return image
+    PILImage = pyautogui.screenshot(region=(x, y, x1, y1))
+    
+    PILImage.save('test.png')
+
+    return imageFile
 
 ####################################################################################################
 
-def ocrCore(image):
-    """
-    This function will handle the core OCR processing of images.
-    """
-    text = pytesseract.image_to_string(image)  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
-    return text
+def detectText(path):
+    """Detects text in the file."""
+
+    client = vision.ImageAnnotatorClient()
+
+    with io.open(path, 'rb') as image_file:
+        content = image_file.read()
+
+    image = vision.types.Image(content=content)
+    response = client.text_detection(image=image, max_results=1)
+    texts = response.text_annotations
+
+    print(texts[0].description)
 
 ####################################################################################################
 
