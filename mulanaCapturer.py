@@ -1,6 +1,7 @@
 import pyautogui
 import win32gui
 import io
+import os
 import tempfile
 import json
 import argparse
@@ -66,6 +67,8 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
         outputFile.write(detectedText)
         outputFile.write("\n" + "|"*100 + "\n\n")
 
+    os.remove(tempFileName)
+
 ####################################################################################################
 
 def captureWindow(windowTitle: str, filename: str, clippingRegion: ClippingRegion):
@@ -87,7 +90,6 @@ def captureWindow(windowTitle: str, filename: str, clippingRegion: ClippingRegio
                 y1 - clippingRegion.top - clippingRegion.bottom))
 
     PILImage.save(filename, format="png")
-    PILImage.show()
 
 ####################################################################################################
 
