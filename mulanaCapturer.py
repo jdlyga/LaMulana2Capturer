@@ -1,15 +1,38 @@
 import pyautogui
 import win32gui
-from google.cloud import vision
-from google.cloud.vision import types
 import io
 import tempfile
+import json
+import argparse
 from dataclasses import dataclass
+from google.cloud.vision import types
+from google.cloud import vision
 
 ####################################################################################################
 
 def main():
-    captureTablet()
+
+    tabletLog, dialogLog, messageLog = parseConfigJson()
+
+    argumentParser = argparse.ArgumentParser()
+    group = argumentParser.add_mutually_exclusive_group()
+    group.add_argument("-t", "--tablet", action='store_true', help="capture and OCR text from a stone tablet")
+    group.add_argument("-d", "--dialog", action='store_true', help="capture and OCR text from dialog")
+    group.add_argument("-m", "--message", action='store_true', help="capture and OCR text from an email message")
+
+    args = vars(argumentParser.parse_args())
+
+    if (args['tablet']):
+        captureAndLog(logFilename=tabletLog, 
+                      clippingRegion=ClippingRegion(left=200, top=150, right=200, bottom=150))
+    elif (args['dialog']):
+        captureAndLog(logFilename=dialogLog, 
+                      clippingRegion=ClippingRegion(left=130, top=70, right=770, bottom=380))
+    elif (args['message']):
+        captureAndLog(logFilename=messageLog, 
+                      clippingRegion=ClippingRegion(left=200, top=170, right=240, bottom=224))
+    else:
+        argumentParser.print_help()
 
 ####################################################################################################
 
@@ -22,26 +45,26 @@ class ClippingRegion:
 
 ####################################################################################################
 
-def captureTablet():
-    capture(clippingRegion=ClippingRegion(left=200, top=150, right=200, bottom=150))
+def parseConfigJson():
+    with open("config.json") as configFile:
+        configData = json.load(configFile)
+    
+    if not configData:
+        raise FileNotFoundError
+
+    return configData['tabletLog'], configData['dialogLog'], configData['messageLog'] 
 
 ####################################################################################################
 
-def captureDialog():
-    capture(clippingRegion=ClippingRegion(left=130, top=70, right=770, bottom=380))
-
-####################################################################################################
-
-def captureMessage():
-    capture(clippingRegion=ClippingRegion(left=200, top=170, right=240, bottom=224))
-
-####################################################################################################
-
-def capture(clippingRegion: ClippingRegion):
+def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 
     tempFileName = tempfile.mktemp()
     captureWindow(windowTitle='LaMulana2', filename=tempFileName, clippingRegion=clippingRegion)
-    detectText(tempFileName)
+    detectedText = detectText(tempFileName)
+
+    with open(logFilename, "a") as outputFile:
+        outputFile.write(detectedText)
+        outputFile.write("\n" + "|"*100 + "\n\n")
 
 ####################################################################################################
 
@@ -80,7 +103,10 @@ def detectText(filename: str):
     response = client.text_detection(image=image, max_results=1)
     texts = response.text_annotations
 
-    print(texts[0].description)
+    try:
+        return texts[0].description
+    except:
+        return ""
 
 ####################################################################################################
 
