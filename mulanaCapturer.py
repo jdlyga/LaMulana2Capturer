@@ -65,7 +65,7 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 
     with open(logFilename, "a") as outputFile:
         outputFile.write(detectedText)
-        outputFile.write("\n" + "|"*100 + "\n\n")
+        outputFile.write("\n" + "|"*60 + "\n\n")
 
     os.remove(tempFileName)
 
