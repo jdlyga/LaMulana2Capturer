@@ -5,6 +5,7 @@ import os
 import tempfile
 import json
 import argparse
+from playsound import playsound
 from dataclasses import dataclass
 from google.cloud.vision import types
 from google.cloud import vision
@@ -59,15 +60,23 @@ def parseConfigJson():
 
 def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 
-    tempFileName = tempfile.mktemp()
-    captureWindow(windowTitle='LaMulana2', filename=tempFileName, clippingRegion=clippingRegion)
-    detectedText = detectText(tempFileName)
+    playsound('Screenshot.mp3')
 
-    with open(logFilename, "a") as outputFile:
-        outputFile.write(detectedText)
-        outputFile.write("\n" + "|"*60 + "\n\n")
+    try:
+        tempFileName = tempfile.mktemp()
+        captureWindow(windowTitle='LaMulana2', filename=tempFileName, clippingRegion=clippingRegion)
+        detectedText = detectText(tempFileName)
 
-    os.remove(tempFileName)
+        with open(logFilename, "a") as outputFile:
+            outputFile.write(detectedText)
+            outputFile.write("\n" + "|"*60 + "\n\n")
+
+        os.remove(tempFileName)
+        playsound('Success.mp3')
+        
+    except:
+        playsound('Error.mp3')
+
 
 ####################################################################################################
 
@@ -105,10 +114,7 @@ def detectText(filename: str):
     response = client.text_detection(image=image, max_results=1)
     texts = response.text_annotations
 
-    try:
-        return texts[0].description
-    except:
-        return ""
+    return texts[0].description
 
 ####################################################################################################
 

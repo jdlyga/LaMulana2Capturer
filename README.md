@@ -18,7 +18,7 @@ optional arguments:
 
 Windows 10 with Python 3.8 installed
 
-Python dependencies installed (pywin32, pyautogui, google-cloud-vision)
+Python dependencies installed (pywin32, pyautogui, google-cloud-vision, playsound)
 
 La Mulana 2 needs to be running in a 1920x1080 window
 
@@ -49,7 +49,7 @@ these claims, too, are unverified.
 
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ```
-
+&nbsp;
 Sound effects from Freesound:
 * https://freesound.org/s/360329/
 * https://freesound.org/s/445978/
