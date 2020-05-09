@@ -60,7 +60,7 @@ def parseConfigJson():
 
 def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 
-    playsound('Screenshot.mp3')
+    playsound('sounds/Screenshot.mp3')
 
     try:
         tempFileName = tempfile.mktemp()
@@ -72,10 +72,10 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
             outputFile.write("\n" + "|"*60 + "\n\n")
 
         os.remove(tempFileName)
-        playsound('Success.mp3')
+        playsound('sounds/Success.mp3')
         
     except:
-        playsound('Error.mp3')
+        playsound('sounds/Error.mp3')
 
 
 ####################################################################################################

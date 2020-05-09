@@ -1,4 +1,4 @@
-Python script for taking screenshots of La Mulana 2, converting the images to text (OCR), and appending the text to files for keeping notes of all text in the game.
+Python script for taking screenshots of La Mulana 2, converting the images to text (OCR), and appending the text to files for keeping notes of all text in the game. The script will play sound effects if capture and text conversion are successful or not.
 
 I suggest using AutoHotkey (or something similar) to set up keyboard shortcuts to run the script to capture each type of text.  I've included a sample AutHotkey script.
 
