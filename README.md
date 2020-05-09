@@ -28,7 +28,8 @@ You need to sign up for Google Cloud Vision and your own credentials stored in G
 
 ##### Example: tablet.txt
 ```
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 [Face Mural]
 There are several face murals by the ruins' entrance. They contain mechanisms
 to make the eyes glow, but it isn't in effect at the current time. The reason for the
@@ -38,7 +39,7 @@ Please head downwards.
 Please do not jump off of the edge unless you are a qualified ninja (or
 archaeologist).
 
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 [Split Gate]
 Similar to the Candi Bentar of Bali Island, but decorated differently. It's thought to
@@ -46,5 +47,5 @@ have been built in tribute to the creator of the La-Mulana ruins, but these clai
 are unverified. There are also tales that people emerged from here once, but
 these claims, too, are unverified.
 
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ```
