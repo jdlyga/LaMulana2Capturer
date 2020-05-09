@@ -40,6 +40,7 @@ def main():
 
 @dataclass
 class ClippingRegion:
+    """represents the amount of pixels on each side to clip from the edge of the screen"""
     left: int
     top: int
     right: int
@@ -48,6 +49,7 @@ class ClippingRegion:
 ####################################################################################################
 
 def parseConfigJson():
+    """the destination for OCR'd text is specified in a json config file"""
     with open("config.json") as configFile:
         configData = json.load(configFile)
     
@@ -59,6 +61,7 @@ def parseConfigJson():
 ####################################################################################################
 
 def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
+    """takes a screenshot, runs OCR conversion, and logs the result to a file"""
 
     playsound('sounds/Screenshot.mp3')
 
@@ -81,6 +84,7 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 ####################################################################################################
 
 def captureWindow(windowTitle: str, filename: str, clippingRegion: ClippingRegion):
+    """takes a screenshot of a specific window (windows only)"""
     
     hwnd = win32gui.FindWindow(None, windowTitle)
 
@@ -103,7 +107,7 @@ def captureWindow(windowTitle: str, filename: str, clippingRegion: ClippingRegio
 ####################################################################################################
 
 def detectText(filename: str):
-    """Detects text in the file."""
+    """uses google cloud vision to OCR the text of an image file"""
 
     client = vision.ImageAnnotatorClient()
 
