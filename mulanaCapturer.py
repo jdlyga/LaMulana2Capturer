@@ -14,7 +14,7 @@ def main():
 
     tabletLog, dialogLog, messageLog = parseConfigJson()
 
-    argumentParser = argparse.ArgumentParser()
+    argumentParser = argparse.ArgumentParser(description="Screenshot, OCR, and append text to files for La Mulana 2.")
     group = argumentParser.add_mutually_exclusive_group()
     group.add_argument("-t", "--tablet", action='store_true', help="capture and OCR text from a stone tablet")
     group.add_argument("-d", "--dialog", action='store_true', help="capture and OCR text from dialog")
