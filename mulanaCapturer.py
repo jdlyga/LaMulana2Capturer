@@ -1,5 +1,6 @@
 import pyautogui
 import win32gui
+import win32clipboard
 import io
 import os
 import tempfile
@@ -21,6 +22,7 @@ def main():
     group.add_argument("-t", "--tablet", action='store_true', help="capture and OCR text from a stone tablet")
     group.add_argument("-d", "--dialog", action='store_true', help="capture and OCR text from dialog")
     group.add_argument("-m", "--message", action='store_true', help="capture and OCR text from an email message")
+    group.add_argument("-s", "--screenshot", action='store_true', help="take a screenshot to the clipboard for making maps")
 
     args = vars(argumentParser.parse_args())
 
@@ -33,6 +35,8 @@ def main():
     elif (args['message']):
         captureAndLog(logFilename=messageLog, 
                       clippingRegion=ClippingRegion(left=200, top=170, right=240, bottom=224))
+    elif (args['screenshot']):
+        makeMapScreenshot()
     else:
         argumentParser.print_help()
 
@@ -67,7 +71,8 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 
     try:
         tempFileName = tempfile.mktemp()
-        captureWindow(windowTitle='LaMulana2', filename=tempFileName, clippingRegion=clippingRegion)
+        PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=clippingRegion)
+        PILImage.save(tempFileName, format="png")
         detectedText = detectText(tempFileName)
 
         with open(logFilename, "a") as outputFile:
@@ -83,7 +88,14 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 
 ####################################################################################################
 
-def captureWindow(windowTitle: str, filename: str, clippingRegion: ClippingRegion):
+def makeMapScreenshot():
+    playsound('sounds/Screenshot.mp3')
+    PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
+    sendToClipboard(PILImage)
+
+####################################################################################################
+
+def captureWindow(windowTitle: str, clippingRegion: ClippingRegion):
     """takes a screenshot of a specific window (windows only)"""
     
     hwnd = win32gui.FindWindow(None, windowTitle)
@@ -102,7 +114,7 @@ def captureWindow(windowTitle: str, filename: str, clippingRegion: ClippingRegio
                 x1 - clippingRegion.right - clippingRegion.left, 
                 y1 - clippingRegion.top - clippingRegion.bottom))
 
-    PILImage.save(filename, format="png")
+    return PILImage
 
 ####################################################################################################
 
@@ -119,6 +131,19 @@ def detectText(filename: str):
     texts = response.text_annotations
 
     return texts[0].description
+
+####################################################################################################
+
+def sendToClipboard(image):
+    output = io.BytesIO()
+    image.convert('RGB').save(output, 'BMP')
+    data = output.getvalue()[14:]
+    output.close()
+
+    win32clipboard.OpenClipboard()
+    win32clipboard.EmptyClipboard()
+    win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+    win32clipboard.CloseClipboard()
 
 ####################################################################################################
 

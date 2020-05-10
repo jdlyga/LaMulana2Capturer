@@ -9,3 +9,7 @@ return
 !e::
 Run python mulanaCapturer.py -m, c:\code\mulanaTools, Hide
 return
+
+!s::
+Run python mulanaCapturer.py -s, c:\code\mulanaTools, Hide
+return
