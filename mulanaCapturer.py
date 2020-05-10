@@ -89,9 +89,9 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
 ####################################################################################################
 
 def makeMapScreenshot():
-    playsound('sounds/Screenshot.mp3')
     PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
     sendToClipboard(PILImage)
+    playsound('sounds/Screenshot.mp3')
 
 ####################################################################################################
 
