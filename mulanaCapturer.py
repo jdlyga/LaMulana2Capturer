@@ -3,6 +3,8 @@ import win32gui
 import win32clipboard
 import io
 import os
+import sys
+import traceback
 import tempfile
 import json
 import argparse
@@ -22,7 +24,8 @@ def main():
     group.add_argument("-t", "--tablet", action='store_true', help="capture and OCR text from a stone tablet")
     group.add_argument("-d", "--dialog", action='store_true', help="capture and OCR text from dialog")
     group.add_argument("-m", "--message", action='store_true', help="capture and OCR text from an email message")
-    group.add_argument("-s", "--screenshot", action='store_true', help="take a screenshot to the clipboard for making maps")
+    group.add_argument("-s", "--screenshotCopy", action='store_true', help="take a screenshot for making maps to the clipboard")
+    group.add_argument("-sv", "--screenshotSave", action='store_true', help="take a screenshot for making maps and write it to a file")
 
     args = vars(argumentParser.parse_args())
 
@@ -35,8 +38,22 @@ def main():
     elif (args['message']):
         captureAndLog(logFilename=messageLog, 
                       clippingRegion=ClippingRegion(left=200, top=170, right=240, bottom=224))
-    elif (args['screenshot']):
-        makeMapScreenshot()
+    elif (args['screenshotCopy']):
+        try:
+            PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
+            sendToClipboard(PILImage)
+            playsound('sounds/Screenshot.mp3')
+        except:
+            playsound('sounds/Error.mp3')
+    elif (args['screenshotSave']):
+        try:
+            PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
+            nextPath = getNextPath('mapScreenshot-')
+            PILImage.save(nextPath, format="png")
+            playsound('sounds/Screenshot.mp3')
+        except:
+            playsound("sounds/Error.mp3")
+
     else:
         argumentParser.print_help()
 
@@ -85,13 +102,34 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
     except:
         playsound('sounds/Error.mp3')
 
-
 ####################################################################################################
 
-def makeMapScreenshot():
-    PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
-    sendToClipboard(PILImage)
-    playsound('sounds/Screenshot.mp3')
+def getNextPath(pathPattern: str):
+    """
+    Finds the next free path in an sequentially named list of files
+
+    e.g. pathPattern = 'file-%s.txt':
+
+    file-1.txt
+    file-2.txt
+    file-3.txt
+
+    Runs in log(n) time where n is the number of existing files in sequence
+    """
+    i = 1
+
+    # First do an exponential search
+    while os.path.exists(f"{pathPattern}{str(i).zfill(5)}.png"):
+        i = i * 2
+
+    # Result lies somewhere in the interval (i/2..i]
+    # We call this interval (a..b] and narrow it down until a + 1 = b
+    a, b = (i // 2, i)
+    while a + 1 < b:
+        c = (a + b) // 2 # interval midpoint
+        a, b = (c, b) if os.path.exists(pathPattern % c) else (a, c)
+
+    return f"{pathPattern}{str(b).zfill(5)}.png"
 
 ####################################################################################################
 
