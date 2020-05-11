@@ -17,7 +17,7 @@ from google.cloud import vision
 
 def main():
 
-    tabletLog, dialogLog, messageLog = parseConfigJson()
+    tabletLog, dialogLog, messageLog, screenshotsDirectory = parseConfigJson()
 
     argumentParser = argparse.ArgumentParser(description="Screenshot, OCR, and append text to files for La Mulana 2.")
     group = argumentParser.add_mutually_exclusive_group()
@@ -48,7 +48,7 @@ def main():
     elif (args['screenshotSave']):
         try:
             PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
-            nextPath = getNextPath('mapScreenshot-')
+            nextPath = getNextPath(f'{screenshotsDirectory}/mapScreenshot-')
             PILImage.save(nextPath, format="png")
             playsound('sounds/Screenshot.mp3')
         except:
@@ -77,7 +77,7 @@ def parseConfigJson():
     if not configData:
         raise FileNotFoundError
 
-    return configData['tabletLog'], configData['dialogLog'], configData['messageLog'] 
+    return configData['tabletLog'], configData['dialogLog'], configData['messageLog'], configData['screenshotsDirectory']
 
 ####################################################################################################
 
@@ -127,7 +127,7 @@ def getNextPath(pathPattern: str):
     a, b = (i // 2, i)
     while a + 1 < b:
         c = (a + b) // 2 # interval midpoint
-        a, b = (c, b) if os.path.exists(pathPattern % c) else (a, c)
+        a, b = (c, b) if os.path.exists(f"{pathPattern}{str(c).zfill(5)}.png") else (a, c)
 
     return f"{pathPattern}{str(b).zfill(5)}.png"
 

@@ -1,5 +1,6 @@
 {
     "tabletLog": "logs/tablet.txt",
     "dialogLog": "logs/dialog.txt",
-    "messageLog": "logs/message.txt"
+    "messageLog": "logs/message.txt",
+    "screenshotsDirectory": "logs"
 }
