@@ -92,7 +92,7 @@ def captureAndLog(logFilename: str, clippingRegion: ClippingRegion):
         PILImage.save(tempFileName, format="png")
         detectedText = detectText(tempFileName)
 
-        with open(logFilename, "a") as outputFile:
+        with open(logFilename, "a", encoding='utf-8') as outputFile:
             outputFile.write(detectedText)
             outputFile.write("\n" + "|"*60 + "\n\n")
 
