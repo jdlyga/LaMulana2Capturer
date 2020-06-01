@@ -1,6 +1,8 @@
 {
-    "tabletLog": "logs/tablet.txt",
+    "tabletLog": "logs/tablet-AncientChaos.txt",
     "dialogLog": "logs/dialog.txt",
     "messageLog": "logs/message.txt",
+    "skullLog": "logs/skulls.txt",
+    "glossaryLog": "logs/glossary.txt",
     "screenshotsDirectory": "logs"
 }

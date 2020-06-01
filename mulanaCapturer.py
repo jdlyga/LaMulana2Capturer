@@ -17,15 +17,18 @@ from google.cloud import vision
 
 def main():
 
-    tabletLog, dialogLog, messageLog, screenshotsDirectory = parseConfigJson()
+    tabletLog, dialogLog, messageLog, skullLog, glossaryLog, screenshotsDirectory = parseConfigJson()
 
     argumentParser = argparse.ArgumentParser(description="Screenshot, OCR, and append text to files for La Mulana 2.")
     group = argumentParser.add_mutually_exclusive_group()
     group.add_argument("-t", "--tablet", action='store_true', help="capture and OCR text from a stone tablet")
     group.add_argument("-d", "--dialog", action='store_true', help="capture and OCR text from dialog")
     group.add_argument("-m", "--message", action='store_true', help="capture and OCR text from an email message")
+    group.add_argument("-k", "--skull", action='store_true', help="capture and OCR text from a crystal skull")
+    group.add_argument("-g", "--glossary", action='store_true', help="capture and OCR text from the glossary")
     group.add_argument("-s", "--screenshotCopy", action='store_true', help="take a screenshot for making maps to the clipboard")
     group.add_argument("-sv", "--screenshotSave", action='store_true', help="take a screenshot for making maps and write it to a file")
+
 
     args = vars(argumentParser.parse_args())
 
@@ -38,6 +41,12 @@ def main():
     elif (args['message']):
         captureAndLog(logFilename=messageLog, 
                       clippingRegion=ClippingRegion(left=200, top=170, right=240, bottom=224))
+    elif (args['skull']):
+        captureAndLog(logFilename=skullLog, 
+                      clippingRegion=ClippingRegion(left=203, top=231, right=203, bottom=176))
+    elif (args['glossary']):
+        captureAndLog(logFilename=glossaryLog, 
+                      clippingRegion=ClippingRegion(left=310, top=286, right=771, bottom=171))
     elif (args['screenshotCopy']):
         try:
             PILImage = captureWindow(windowTitle='LaMulana2', clippingRegion=ClippingRegion(left=127, top=134, right=127, bottom=64))
@@ -77,7 +86,7 @@ def parseConfigJson():
     if not configData:
         raise FileNotFoundError
 
-    return configData['tabletLog'], configData['dialogLog'], configData['messageLog'], configData['screenshotsDirectory']
+    return configData['tabletLog'], configData['dialogLog'], configData['messageLog'], configData['skullLog'], configData['glossaryLog'], configData['screenshotsDirectory']
 
 ####################################################################################################
 
